@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import BlockchainView from "./components/BlockchainView";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+    const [blockchain, setBlockchain] = useState([]);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    // Fetch blockchain data from the backend
+    useEffect(() => {
+        fetch("http://localhost:3001/blockchain")
+            .then((response) => response.json())
+            .then((data) => {
+                setBlockchain(data.chain); // Assuming the backend returns { chain: [...] }
+            })
+            .catch((error) => console.error("Error fetching blockchain data:", error));
+    }, []);
 
-export default App
+    return (
+        <div className="bg-gray-100 min-h-screen">
+            <header className="p-4 bg-blue-600 text-white text-center font-bold">
+                React Blockchain Viewer
+            </header>
+            <main className="p-4">
+                <h1 className="text-xl font-bold text-gray-700 mb-4">Blockchain Overview</h1>
+                <BlockchainView blockchain={blockchain} />
+            </main>
+        </div>
+    );
+};
+
+export default App;
